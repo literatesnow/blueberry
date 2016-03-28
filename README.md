@@ -3,7 +3,7 @@
 ## Goals
 
 1. Learn Go.
-2. Create a simple frontend for rtorrent.
+2. Create a simple web frontend for rtorrent.
 
 ## Software development cycle
 
