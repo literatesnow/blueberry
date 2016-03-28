@@ -13,11 +13,11 @@ func main() {
 	//system.client_version, download_list
 
 	doc := xmlrpc.CreateRequest("d.multicall", []xmlrpc.Value{
-		xmlrpc.NewValueString("main"),
-		xmlrpc.NewValueString("d.base_filename="),
-		xmlrpc.NewValueString("d.base_path="),
-		xmlrpc.NewValueString("d.bytes_done="),
-		xmlrpc.NewValueString("d.is_private=")})
+		xmlrpc.NewString("main"),
+		xmlrpc.NewString("d.base_filename="),
+		xmlrpc.NewString("d.base_path="),
+		xmlrpc.NewString("d.bytes_done="),
+		xmlrpc.NewString("d.is_private=")})
 
 	response, err := cl.Request(doc)
 
