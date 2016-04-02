@@ -1,0 +1,42 @@
+ <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Blueberry</title>
+  </head>
+
+  <body>
+    <h1>Blueberry</h1>
+
+    <div id="content"></div>
+
+    <script>
+      function ajax(uri) {
+        var request = new XMLHttpRequest();
+        request.open('GET', uri, true);
+
+        request.onreadystatechange = function() {
+          var data;
+          if (this.readyState === 4) {
+            if (this.status >= 200 && this.status < 400) {
+              data = this.responseText;
+            } else {
+              data = 'Error!';
+            }
+
+            var content = document.getElementById('content');
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(data));
+            content.appendChild(div);
+          }
+        };
+
+        request.send();
+        request = null;
+      }
+
+      ajax('/rtorrent/list');
+      ajax('/rtorrent/version');
+    </script>
+  </body>
+</html>
