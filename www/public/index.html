@@ -11,32 +11,47 @@
     <div id="content"></div>
 
     <script>
-      function ajax(uri) {
+      function ajax(uri, data) {
         var request = new XMLHttpRequest();
-        request.open('GET', uri, true);
+        request.open('POST', uri, true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 
         request.onreadystatechange = function() {
-          var data;
+          var res;
           if (this.readyState === 4) {
             if (this.status >= 200 && this.status < 400) {
-              data = this.responseText;
+              res = this.responseText;
             } else {
-              data = 'Error!';
+              res = 'Error! ' + this.responseText;
             }
 
             var content = document.getElementById('content');
             var div = document.createElement('div');
-            div.appendChild(document.createTextNode(data));
+            div.appendChild(document.createTextNode(res));
             content.appendChild(div);
           }
         };
 
-        request.send();
+        request.send(JSON.stringify(data));
         request = null;
       }
 
-      ajax('/rtorrent/list');
-      ajax('/rtorrent/version');
+      (function() {
+        var requests = [
+          { methodName: 'system.client_version' },
+          { methodName: 'd.multicall',
+            params: [{ string: 'main' },
+                     { string: 'd.base_filename=' },
+                     { string: 'd.base_path=' },
+                     { string: 'd.bytes_done=' },
+                     { string: 'd.is_private=' }] }
+        ];
+
+        var i;
+        for (i = 0; i < requests.length; i++) {
+          ajax('/rtorrent/request', requests[i]);
+        }
+      })();
     </script>
   </body>
 </html>
