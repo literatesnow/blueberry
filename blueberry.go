@@ -6,6 +6,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -28,7 +29,7 @@ func main() {
 }
 
 func rtrequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	w.Header().Set("Content-Type", "text/plain")
+	w.Header().Set("Content-Type", "application/json")
 
 	methodName, params, err := xmlrpc.ParseJsonRequest(r.Body)
 	if err != nil {
@@ -45,7 +46,10 @@ func rtrequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	values := xmlrpc.ParseResponse(response)
-	for _, val := range values {
-		fmt.Fprintf(w, "%s\n", val.Print())
+	buf, err := json.Marshal(values)
+	if err != nil {
+		fmt.Fprintf(w, "Error: %s", err)
+	} else {
+		fmt.Fprintf(w, string(buf))
 	}
 }
