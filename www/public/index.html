@@ -2,61 +2,59 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>BlueBerry</title>
+    <title>Blueberry</title>
     <link rel="stylesheet" type="text/css" href="lib/components/skeleton/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="lib/components/skeleton/css/skeleton.css">
     <script src="lib/components/lodash/dist/lodash.js"></script>
     <script src="lib/components/vue/dist/vue.js"></script>
+    <script src="lib/rpc.js"></script>
+    <script src="lib/blueberry.js"></script>
   </head>
 
   <body>
-    <div class="container">
-      <h1>BlueBerry</h1>
+    <div id="main" class="container">
+      <h1>Blueberry</h1>
 
-      <div id="content"></div>
+      <table class="u-full-width">
+        <thead>
+          <tr>
+            <th>Hash</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in torrents">
+            <td>{{ item.hash }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.percent }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <script>
-      function ajax(uri, data) {
-        var request = new XMLHttpRequest();
-        request.open('POST', uri, true);
-        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-
-        request.onreadystatechange = function() {
-          var res;
-          if (this.readyState === 4) {
-            if (this.status >= 200 && this.status < 400) {
-              res = this.responseText;
-            } else {
-              res = 'Error! ' + this.responseText;
-            }
-
-            var content = document.getElementById('content');
-            var div = document.createElement('div');
-            div.appendChild(document.createTextNode(res));
-            content.appendChild(div);
-          }
-        };
-
-        request.send(JSON.stringify(data));
-        request = null;
-      }
-
       (function() {
-        var requests = [
-          { methodName: 'system.client_version' },
-          { methodName: 'd.multicall',
-            params: [{ string: 'main' },
-                     { string: 'd.base_filename=' },
-                     { string: 'd.base_path=' },
-                     { string: 'd.bytes_done=' },
-                     { string: 'd.is_private=' }] }
-        ];
+        var bb = new Blueberry();
 
-        var i;
-        for (i = 0; i < requests.length; i++) {
-          ajax('/rtorrent/request', requests[i]);
-        }
+        new Vue({
+          el: '#main',
+          data: {
+            torrents: []
+          },
+          methods: {
+          },
+          ready: function() {
+            bb.jxhr('/rtorrent/request', Blueberry.rpc.list.getRequest())
+              .then(function(data) {
+                this.torrents = Blueberry.rpc.list.getResponse(data);
+              }.bind(this), function(err) {
+                console.log(err);
+              });
+          }
+        });
       })();
     </script>
   </body>
