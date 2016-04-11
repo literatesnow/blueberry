@@ -45,8 +45,11 @@ func rtrequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	values := xmlrpc.ParseResponse(response)
-	buf, err := json.Marshal(values)
+	value, err := xmlrpc.ParseResponse(response)
+	if err != nil {
+		fmt.Fprintf(w, "Error: %s", err)
+	}
+	buf, err := json.Marshal(value)
 	if err != nil {
 		fmt.Fprintf(w, "Error: %s", err)
 	} else {
