@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bitbucket.org/unrulyknight/scgi"
-	"bitbucket.org/unrulyknight/xmlrpc"
+	"github.com/literatesnow/scgi"
+	"github.com/literatesnow/xmlrpc"
 
 	"github.com/julienschmidt/httprouter"
 
