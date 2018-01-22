@@ -13,6 +13,7 @@
   "dependencies": {
     "lodash": "^4.9.0",
     "skeleton": "skeleton-css#^2.0.4",
-    "vue": "^1.0.21"
+    "vue": "^1.0.21",
+    "moment": "^2.12.0"
   }
 }

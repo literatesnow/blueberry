@@ -5,57 +5,52 @@
     <title>Blueberry</title>
     <link rel="stylesheet" type="text/css" href="lib/components/skeleton/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="lib/components/skeleton/css/skeleton.css">
+    <link rel="stylesheet" type="text/css" href="styles/blueberry.css">
     <script src="lib/components/lodash/dist/lodash.js"></script>
     <script src="lib/components/vue/dist/vue.js"></script>
-    <script src="lib/rpc.js"></script>
-    <script src="lib/blueberry.js"></script>
+    <script src="lib/components/moment/min/moment.min.js"></script>
+    <script src="scripts/rpc.js"></script>
+    <script src="scripts/blueberry.js"></script>
   </head>
 
   <body>
     <div id="main" class="container">
       <h1>Blueberry</h1>
 
+      <div class="row">
+        <div class="six columns">Welcome</div>
+        <div class="six columns right">{{ lastStatus() }}</div>
+      </div>
+
       <table class="u-full-width">
         <thead>
           <tr>
-            <th>Hash</th>
             <th>Name</th>
-            <th>Status</th>
+            <th>Size</th>
+            <th>Rate</th>
             <th>Progress</th>
+            <th>Uploaded</th>
+            <th>Ratio</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in torrents">
-            <td>{{ item.hash }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.status }}</td>
+            <td><a href="#{{ item.hash }}">{{ item.name }}</a></td>
+            <td>{{ item.size }}</td>
+            <td>{{ item.rate }}</td>
             <td>{{ item.percent }}</td>
+            <td>{{ item.uploaded }}</td>
+            <td>{{ item.ratio }}</td>
+            <td>{{ item.status }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <script>
-      (function() {
-        var bb = new Blueberry();
-
-        new Vue({
-          el: '#main',
-          data: {
-            torrents: []
-          },
-          methods: {
-          },
-          ready: function() {
-            bb.jxhr('/rtorrent/request', Blueberry.rpc.list.getRequest())
-              .then(function(data) {
-                this.torrents = Blueberry.rpc.list.getResponse(data);
-              }.bind(this), function(err) {
-                console.log(err);
-              });
-          }
-        });
-      })();
+      var bb = new Blueberry();
+      bb.bootstrap('#main');
     </script>
   </body>
 </html>
